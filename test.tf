@@ -16,7 +16,7 @@ resource "aws_vpc" "myvpc" {
 }
 
 resource "aws_subnet" "public-sbn" {
-    for_each = toset(var.vpc_config.subnets)
+    for_each = var.vpc_config.subnets
     vpc_id = aws_vpc.myvpc.id
     cidr_block = each.value
     map_public_ip_on_launch = true
