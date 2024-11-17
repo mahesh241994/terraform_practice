@@ -6,6 +6,12 @@ tags = {
 Environment = "Dev" , Team = "Devops"}
 }
 }
+locals {
+  
+}
+resource "aws_security_group" "my_sG" {
+  
+}
 
 
 resource "aws_vpc" "myvpc" {
@@ -44,12 +50,13 @@ resource "aws_route" "intenet_access" {
   gateway_id = aws_internet_gateway.my-igw.id
 }
 
+# resource "aws_route_table_association" "subnet1_association" {
+#   subnet_id = aws_subnet.public-sbn.id
+#   route_table_id = aws_route_table.main.id
+# }
 resource "aws_route_table_association" "subnet1_association" {
-  subnet_id = aws_subnet.public-sbn.id
-  route_table_id = aws_route_table.main.id
-}
-resource "aws_route_table_association" "subnet2_association" {
-  subnet_id = aws_subnet.public-sbn.id
+  for_each = aws_subnet.public-sbn
+  subnet_id = each.value.id
   route_table_id = aws_route_table.main.id
 }
 
@@ -58,5 +65,5 @@ output "vpc_id" {
   
 }
 output "subnet_id" {
-    value = aws_subnet.public-sbn.id
+    value = [for subnet in aws_subnet.public-sbn: subnet.id]
 }
